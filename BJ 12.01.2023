@@ -1,0 +1,454 @@
+#include <iostream>
+#include <unistd.h>
+#include <cstdlib>
+#include <vector>
+#include <algorithm>
+#include <string>
+#include <fstream>
+
+
+using namespace std;
+
+//ENGINE
+int game() {
+
+srand(time(0));
+    //Temp
+    fstream cardValues("Temp.txt");
+    vector<string> values;
+    string value;
+
+        while (getline(cardValues, value)) {
+        values.push_back(value);
+        }
+
+    cardValues.close();
+
+    int cardIndex = rand() % values.size();
+
+    //cout << "Card index: " << cardIndex << endl;
+    //cout << "Pts: " << values[cardIndex] << endl;
+
+    int q =stoi(values[cardIndex]);
+    
+
+    values.erase(values.begin() + cardIndex);
+
+    ofstream out("Temp.txt");
+
+        for (const auto & line : values)
+        {
+            out << line << endl;
+        }
+    out.close();
+
+    //Cards2
+    ifstream cardColors("Cards2_copy.txt");
+    vector<string> colors;
+    string color;
+
+        while (getline(cardColors, color)) {
+        colors.push_back(color);
+        }
+
+    cardColors.close();
+
+    cout << "Your card : " << colors[cardIndex] << endl;
+
+    colors.erase(colors.begin() + cardIndex);
+
+    ofstream outc("Cards2_copy.txt");
+
+        for (const auto & line : colors)
+        {
+            outc << line << endl;
+        }
+    outc.close();
+
+    usleep(2000000);
+
+    return q;
+}
+
+int croupier() {
+
+srand(time(0));
+    //Temp
+    fstream cardValues("Temp.txt");
+    vector<string> values;
+    string value;
+
+        while (getline(cardValues, value)) {
+        values.push_back(value);
+        }
+
+    cardValues.close();
+
+    int cardIndex = rand() % values.size();
+
+    //cout << "Card index: " << cardIndex << endl;
+    //cout << "Pts: " << values[cardIndex] << endl;
+
+    int c =stoi(values[cardIndex]);
+    
+
+    values.erase(values.begin() + cardIndex);
+
+    ofstream out("Temp.txt");
+
+        for (const auto & line : values)
+        {
+            out << line << endl;
+        }
+    out.close();
+
+    //Cards2
+    ifstream cardColors("Cards2_copy.txt");
+    vector<string> colors;
+    string colour;
+
+        while (getline(cardColors, colour)) {
+        colors.push_back(colour);
+        }
+
+    cardColors.close();
+
+    colors.erase(colors.begin() + cardIndex);
+
+    ofstream outc("Cards2_copy.txt");
+
+        for (const auto & line : colors)
+        {
+            outc << line << endl;
+        }
+    outc.close();
+
+    usleep(2000000);
+
+    return c;
+}
+
+//INTERFACE
+int main()
+{
+//INITIAL SCREEN
+        system("clear");
+        cout << "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┓" << endl;
+        cout << "┃Welcome to black jack game!┃" << endl;
+        cout << "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━┛" << endl;
+
+        usleep(3000000);
+        system ("clear");
+
+// START
+        int x;
+
+start:
+        cout << "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓" << endl <<
+                "┃Choose what you want to do : ┃" << endl <<
+                "┃1 - Start the game           ┃" << endl << 
+                "┃2 - Card values              ┃" << endl << 
+                "┃3 - Rules of BlackJack       ┃" << endl << 
+                "┃4 - Exit                     ┃" << endl <<
+                "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛" << endl;
+
+        cin >> x;
+
+        system("clear");
+
+//GAME CODE
+
+    switch(x){
+        case 1:
+        {
+        cout << "1000 credits has been added to your wallet" << endl;
+        usleep(2000000);
+        system ("clear");
+        string sourcetxt = "Cards.txt";
+        string temptxt = "Temp.txt";
+
+//TXT PART
+
+        ifstream in(sourcetxt);
+        ofstream out(temptxt, ios::out);
+        
+        if(in.is_open() && out.is_open())
+        {
+        string line;
+        while(getline(in, line))
+        {
+            out << line << endl;
+        }
+        }
+        in.close();
+        out.close();
+
+        ifstream file_in("Cards2.txt");
+        ofstream file_out("Cards2_copy.txt");
+
+        string line;
+        while (getline(file_in, line))
+        {
+        file_out << line << endl;
+        }   
+        file_in.close();
+        file_out.close();
+
+//GAME PART
+        int credits;
+        credits = 1000;
+        int bet;
+
+again:
+        cout << "CREDITS : " << credits << endl;
+        cout << "Enter the amount of credits you want to bet: " << endl;
+entry:
+        if(credits == 0)
+        {   
+            system("clear");
+            cout << "You have no more credits. You lost." << endl;
+            usleep(2000000);
+            goto exit;
+        }
+        cin >> bet;
+        if(bet <= credits && bet > 0)
+        {
+        cout << "Bet accepted" << endl;
+        usleep(100000);
+        
+        for(int i = 5; i >= 0; --i)
+        {   
+            cout << "The game will start in :" << endl;
+            cout << i << endl;
+            usleep(1000000);
+            system("clear");
+
+        }
+        }
+        if(bet > credits)
+        {
+            cout << "You don't have enough credits. Please type in the right amount:" << endl;
+            goto entry;
+            break;
+        }
+        if(bet <= 0)
+        {
+            cout << "Type in the right value:" << endl;
+            goto entry;
+            break;
+        }
+        credits = credits - bet;
+        
+        int player_pts = 0;
+        int croupier_pts = 0;
+        int pp = 0;
+        int cp = 0;
+
+        for(int h = 0; h < 2; h++)
+            {
+               pp = game();
+               cp = croupier();
+               player_pts = player_pts + pp;
+               croupier_pts = croupier_pts + cp;
+            }        
+        cout << "You have " << player_pts << "pts" << endl;
+
+        int border = 21;
+
+        if(player_pts > border)
+        {      
+play_option3:
+            usleep(1000000);
+            system("clear");
+            cout << "You have lost." << endl;
+            usleep(3000000);
+play_option:
+            cout << "Choose what you want to do : " << endl;
+            cout << "1 - Play again" << endl << "2 - Exit" << endl;
+            int option;
+            cin >> option;
+
+            switch(option){
+            case 1:
+                {   system("clear");
+                    goto again;
+                    break;
+                }
+                
+
+            case 2:
+                {   system("clear");
+                    goto exit;
+                    break;
+                }
+            default: 
+                {
+                    cout << "There is no such option! " << endl;
+                    usleep(3000000);
+                    system("clear");
+                        goto play_option;
+                        break;
+                }
+            }
+        } 
+        else {
+play_option2:
+            cout << "Choose what you want to do : " << endl;
+            cout << "1 - Pick one more card" << endl << "2 - Pass" << endl;
+            int option2;
+            cin >> option2;
+            switch(option2)
+            {
+                case 1:
+                {
+                    pp = game();
+                    player_pts = player_pts + pp;
+                        if(player_pts < border)
+                        {
+                            cout << "You have " << player_pts << "pts" << endl;
+                            goto play_option2;
+                            break;
+                        }
+                        if(player_pts > border)
+                        {
+                            goto play_option3;
+                            break;
+                        }
+                        if(player_pts == border && player_pts != croupier_pts)
+                        {
+                            cout << "You have won!!!" << endl;
+                            cout << "Your points : " << player_pts << endl;
+                            cout << "Croupier's points : " << croupier_pts << endl;
+                            credits = credits + 2*bet;
+                            usleep(5000000);
+                            system("clear");
+                            goto play_option;
+                            break;
+                        }
+                        if(player_pts == croupier_pts && player_pts < border)
+                        {
+                            cout << "Draw" << endl;
+                            cout << "Your points : " << player_pts << endl;
+                            cout << "Croupier's points : " << croupier_pts << endl;
+                            usleep(5000000);
+                            system("clear");
+                            credits = credits + bet;
+                            goto play_option;
+                        }
+                }
+                case 2:
+                {
+                    if(player_pts > croupier_pts && player_pts < border)
+                    {
+                        cout << "You have won!!!" << endl;
+                        cout << "Your points : " << player_pts << endl;
+                        cout << "Croupier's points : " << croupier_pts << endl;
+                        credits = credits + 2*bet;
+                        usleep(5000000);
+                        system("clear");
+                        goto play_option;
+                    }
+                    if(player_pts < croupier_pts && player_pts < border && croupier_pts < border)
+                    {
+                        cout << "You have lost." << endl;
+                        cout << "Your points : " << player_pts << endl;
+                        cout << "Croupier's points : " << croupier_pts << endl;
+                        usleep(5000000);
+                        system("clear");
+                        goto play_option;
+                    }
+                    if(player_pts == croupier_pts && player_pts < border)
+                    {
+                        cout << "Draw" << endl;
+                        cout << "Your points : " << player_pts << endl;
+                        cout << "Croupier's points : " << croupier_pts << endl;
+                        usleep(5000000);
+                        system("clear");
+                        credits = credits + bet;
+                        goto play_option;
+                    }
+                  
+                }
+
+                default:
+                {
+                goto play_option2;
+                break;
+                }
+                               
+                            
+            }       
+        }
+
+
+        break;
+        }
+
+        case 2:
+        {
+    //CARD VALUE
+        cout << "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┓" << endl;
+        cout << "┃        Card Values        ┃" << endl;
+        cout << "┃━━━━━━━━━━━━━━━━━━━━━━━━━━━┃" << endl;
+        cout << "┃    card    ┃   value(pts) ┃" << endl;
+        cout << "┃━━━━━━━━━━━━━━━━━━━━━━━━━━━┃" << endl;
+        cout << "┃      2     ┃       2      ┃" << endl;
+        cout << "┃      3     ┃       3      ┃" << endl;
+        cout << "┃      4     ┃       4      ┃" << endl;
+        cout << "┃      5     ┃       5      ┃" << endl;
+        cout << "┃      6     ┃       6      ┃" << endl;
+        cout << "┃      7     ┃       7      ┃" << endl;
+        cout << "┃      8     ┃       8      ┃" << endl;
+        cout << "┃      9     ┃       9      ┃" << endl;
+        cout << "┃      10    ┃       10     ┃" << endl;
+        cout << "┃      J     ┃       10     ┃" << endl;
+        cout << "┃      Q     ┃       10     ┃" << endl;
+        cout << "┃      K     ┃       10     ┃" << endl;
+        cout << "┃      A     ┃       11     ┃" << endl;
+        cout << "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━┛" << endl;
+        usleep(6000000);
+        system("clear");
+        goto start;
+        }
+        case 3:
+        
+       {
+            cout << "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓" << endl <<
+                    "┃       RULES OF BLACKJACK         ┃" << endl <<
+                    "┃━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┃" << endl <<
+                    "┃     The aim of the game is to    ┃" << endl <<
+                    "┃     get as close to 21 points    ┃" << endl <<
+                    "┃        as possible, without      ┃" << endl <<
+                    "┃    exceeding it. The winner is   ┃" << endl <<
+                    "┃    the one who gets closer or    ┃" << endl <<
+                    "┃         equals 21 points.        ┃" << endl <<
+                    "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛" << endl;
+
+            usleep(5000000);
+            system ("clear");
+            goto start;
+            break;
+        }
+
+        case 4:
+        {
+            exit:
+        usleep(500000);
+        system("clear");
+        cout << "┏━━━━━━━━━━━━━━━━━━━━━━━━━━━┓" << endl <<
+                "┃       See you soon!       ┃" << endl <<
+                "┃  Thank you for playing :) ┃" << endl << 
+                "┗━━━━━━━━━━━━━━━━━━━━━━━━━━━┛" << endl << 
+                "                                                       created by Disconnected03";
+        return 0;
+        system ("clear");
+        break;
+        }
+        default:
+            cout << "There is no such option! " << endl;
+            usleep(3000000);
+            system("clear");
+            goto start;
+    }
+
+}
